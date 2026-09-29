@@ -281,25 +281,29 @@ public class SensorHook {
 
         try {
             SensorEvent event = sensorEventCtor.newInstance(values.length);
-            event.values = values;
-            // 用反射设置 sensor 字段（SensorEvent.sensor 是 public final）
-            try {
-                java.lang.reflect.Field sensorField = SensorEvent.class.getDeclaredField("sensor");
-                sensorField.setAccessible(true);
-                // 清除 final 修饰符，否则可能无法设置
-                java.lang.reflect.Field accessFlags = java.lang.reflect.Field.class
-                        .getDeclaredField("accessFlags");
-                accessFlags.setAccessible(true);
-                accessFlags.setInt(sensorField, sensorField.getModifiers() & ~java.lang.reflect.Modifier.FINAL);
-                sensorField.set(event, sensor);
-            } catch (Throwable ignored) {
-                // 某些版本 sensor 字段处理方式不同，忽略
-            }
+            // values 字段是 public final，需要用反射设置
+            setFinalField(event, "values", values);
+            // sensor 字段也是 public final
+            setFinalField(event, "sensor", sensor);
             event.timestamp = System.nanoTime();
             return event;
         } catch (Throwable t) {
             return null;
         }
+    }
+
+    /**
+     * 通过反射设置对象的 final 字段。
+     */
+    private static void setFinalField(Object obj, String fieldName, Object value) throws Exception {
+        java.lang.reflect.Field field = obj.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        // 清除 final 修饰符
+        java.lang.reflect.Field accessFlags = java.lang.reflect.Field.class
+                .getDeclaredField("accessFlags");
+        accessFlags.setAccessible(true);
+        accessFlags.setInt(field, field.getModifiers() & ~java.lang.reflect.Modifier.FINAL);
+        field.set(obj, value);
     }
 
     public static void resetSensors() {
