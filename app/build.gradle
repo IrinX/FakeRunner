@@ -1,0 +1,46 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.fakerunner.xposed'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.fakerunner.xposed"
+        // Modern API 的 onPackageLoaded 需要 API 29+
+        minSdk 29
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+        debug {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // Modern API 使用 META-INF 下的配置文件，Gradle 会自动把 resources 目录打包进去
+    sourceSets {
+        main {
+            resources.srcDirs += ['src/main/resources']
+        }
+    }
+}
+
+dependencies {
+    // Modern Xposed API (libxposed API 102)，compileOnly 不打包进 APK
+    compileOnly 'io.github.libxposed:api:102.0.0'
+
+    // Modern API 用到了 androidx.annotation 的注解
+    compileOnly 'androidx.annotation:annotation:1.7.1'
+}

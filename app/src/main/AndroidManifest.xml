@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Modern API 不再需要 xposedmodule metadata，用 label/description 资源 -->
+    <application
+        android:allowBackup="false"
+        android:label="@string/module_name"
+        android:description="@string/module_description"
+        android:supportsRtl="true">
+    </application>
+
+</manifest>

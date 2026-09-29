@@ -1,0 +1,3 @@
+# 作用域：默认留空，由用户在 LSPosed 管理器中手动勾选目标 App
+# 如需预设，每行一个包名，例如：
+# com.example.sportapp
